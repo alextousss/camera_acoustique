@@ -1,11 +1,14 @@
 import numpy as np
 import matplotlib.pyplot as plt
-pas = 20
-tab_sum = []
+
+pas = 1000
+result = []
 tab = np.loadtxt("data.txt", dtype="int")
-for i in range(int(len(tab)/pas)):
-    tab_sum.append(np.sum(tab[i:i+pas]))
+for i in range(len(tab) - pas):
+    result.append(0)
+    for j in range(pas):
+        result[i] += tab[i + j]
 # print(len(tab_sum))
 
-plt.plot(tab_sum)
+plt.plot(result)
 plt.show()
