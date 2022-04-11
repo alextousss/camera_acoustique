@@ -1,17 +1,24 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from tqdm import tqdm
 
-for i in range(1, 11):
-    pas = i*100
-    result = []
-    tab = np.loadtxt("data.txt", dtype="int")
+
+tab = np.loadtxt("data.txt", dtype="int")
+l = len(tab)
+nb_courbes = 6
+courbes = np.zeros((nb_courbes, l))
+
+for k in tqdm(range(1, nb_courbes)):
+    pas = k*200
     for i in range(len(tab) - pas):
-        result.append(0)
         for j in range(pas):
-            result[i] += tab[i + j]
+            courbes[k, i] += tab[i + j]
+        courbes[k, i] = courbes[k, i]/pas
     # print(len(tab_sum))
-    plt.plot(result)
 
+    plt.plot(courbes[k, :-pas], label=str(pas))
+
+plt.legend()
 plt.show()
 
 # Fréquence de coupure
@@ -21,8 +28,7 @@ tau = 1/(2*np.pi*fc)
 # Période d'échantillonnage
 Te = 1  # s
 
-s_pb = []
-s_pb.append(result[0])
+s_pb = np.zeros((nb_courbes, l))
 
 # Filtrage
 for i in range(1, len(result)):
