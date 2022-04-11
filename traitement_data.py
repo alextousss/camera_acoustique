@@ -10,8 +10,8 @@ for i in range(len(tab) - pas):
         result[i] += tab[i + j]
 # print(len(tab_sum))
 
-# plt.plot(result)
-# plt.show()
+plt.plot(result)
+plt.show()
 
 # Fréquence de coupure
 fc = 0.22  # Hz
