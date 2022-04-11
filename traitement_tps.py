@@ -22,7 +22,7 @@ for i in range(pas//2, l - pas//2):
 moy = sum(result)/len(result)
 for i in range(len(result)):
     result[i] = result[i]-moy
-#plt.plot(temps_plot, result)
+# plt.plot(temps_plot, result)
 # plt.show()
 
 # Fréquence de coupure
