@@ -1,16 +1,17 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-pas = 500
-result = []
-tab = np.loadtxt("data.txt", dtype="int")
-for i in range(len(tab) - pas):
-    result.append(0)
-    for j in range(pas):
-        result[i] += tab[i + j]
-# print(len(tab_sum))
+for i in range(1, 11):
+    pas = i*100
+    result = []
+    tab = np.loadtxt("data.txt", dtype="int")
+    for i in range(len(tab) - pas):
+        result.append(0)
+        for j in range(pas):
+            result[i] += tab[i + j]
+    # print(len(tab_sum))
+    plt.plot(result)
 
-plt.plot(result)
 plt.show()
 
 # Fréquence de coupure
