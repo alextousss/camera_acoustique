@@ -2,6 +2,8 @@ from math import sin, sqrt, pi
 
 d = 1*(10**(-2))
 
+## Attention pb au niveau du déphasage => list out of range ##
+
 
 def deph_avant_signal_num(tab, delta_t):
     tps = tab[0]
