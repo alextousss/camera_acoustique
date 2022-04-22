@@ -31,7 +31,7 @@ tau = 1/(2*np.pi*fc)
 # Période d'échantillonnage
 Te = 1/400000  # s
 
-s_pb = np.zeros((nb_courbes, l))
+s_pb = np.zeros((nb_courbes, l))  # signal passe-bas
 print("Début du filtrage")
 
 for k in tqdm(range(1, nb_courbes)):
