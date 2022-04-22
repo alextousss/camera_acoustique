@@ -31,7 +31,7 @@ def traitement(lst_s, phi):
     res = []
     # dist=distance à déphaser en mètres entre s1 et s2
     dist = sqrt(d**2-(d*sin(phi))**2)
-    delta_t = (dist/340)
+    delta_t = dist/340
     if phi >= pi/2:
         for i in range(len(lst_s)):
             res.append(deph_avant_signal_num(lst_s[i], i*delta_t))
