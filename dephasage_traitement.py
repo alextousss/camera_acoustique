@@ -10,7 +10,7 @@ def deph_avant_signal_num(tab, delta_t):
     valeurs = tab[1]
     c = 1
     t = 0
-    while t < delta_t:
+    while t < delta_t and c < len(tps):
         t += tps[c]-tps[c-1]
         c += 1
     return ([tps[:len(tps)-1-c], valeurs[c:]])  # avance la phase du signal
@@ -21,7 +21,7 @@ def deph_arrière_signal_num(tab, delta_t):
     valeurs = tab[1]
     c = 1
     t = 0
-    while t < delta_t:
+    while t < delta_t and c < len(tps):
         t += tps[c]-tps[c-1]
         c += 1
     return ([tps[c:], valeurs[:len(tps)-1-c]])
@@ -43,13 +43,19 @@ def traitement(lst_s, phi):
     return(res)
 
 
+def taille_min(lst_s):         # récupère la taille de la plus petite liste
+    taille = []
+    for e in lst_s:
+        taille.append(len(e[1]))
+    return min(taille)
+
+
 def somme_signaux(lst_s, phi):
     deph = traitement(lst_s, phi)            # déphase le signal
-    res = [deph[0][0], deph[0][1]]           # res = [[tps],[val]]
-    for i in range(len(deph)):              # parcours des signaux déphasés
-        # vérifie la taille de chaque lst de valeurs des signaux déphasage
-        assert len(deph[i][1]) == len(res[1])
+    t = taille_min(deph)
+    res = [deph[0][0][:t], deph[0][1][:t]]           # res = [[tps],[val]]
+    for i in range(1, len(deph)):              # parcours des signaux déphasés
         # parcours les valeurs du signal pour les sommer
-        for j in range(len(deph[0][1])):
+        for j in range(t):
             res[1][j] += deph[i][1][j]
     return res

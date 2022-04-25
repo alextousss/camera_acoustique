@@ -3,7 +3,7 @@ import numpy as np
 from dephasage_traitement import *
 from math import pi
 
-entree = [[[0 for tps in range(500)], [0 for val in range(500)]]
+entree = [[[0 for tps in range(5000)], [0 for val in range(5000)]]
           for k in range(10)]
 tab = []
 
