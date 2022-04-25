@@ -8,10 +8,10 @@ d = 1*(10**(-2))
 def deph_avant_signal_num(tab, delta_t):
     tps = tab[0]
     valeurs = tab[1]
-    c = 1
+    c = 0
     t = 0
     while t < delta_t:
-        t += tps[c]-tps[c-1]
+        t += tps[c+1]-tps[c]
         c += 1
     return ([tps[:len(tps)-1-c], valeurs[c:]])  # avance la phase du signal
 
@@ -34,12 +34,14 @@ def traitement(lst_s, phi):
     # dist=distance à déphaser en mètres entre s1 et s2
     dist = sqrt(d**2-(d*sin(phi))**2)
     delta_t = dist/340
-    if phi >= pi/2:
-        for i in range(len(lst_s)):
-            res.append(deph_avant_signal_num(lst_s[i], i*delta_t))
-    else:
-        for i in range(len(lst_s)):
-            res.append(deph_arrière_signal_num(lst_s[i], i*delta_t))
+    print(phi, delta_t*100000)
+    print(phi, delta_t*100000)
+    # if phi >= pi/2:
+    for i in range(len(lst_s)):
+        res.append(deph_avant_signal_num(lst_s[i], i*delta_t))
+    # else:
+        # for i in range(len(lst_s)):
+        #res.append(deph_arrière_signal_num(lst_s[i], i*delta_t))
     return(res)
 
 

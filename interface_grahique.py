@@ -3,7 +3,7 @@ import numpy as np
 from dephasage_traitement import *
 from math import pi
 
-entree = [[[tps/(4*(10**5)) for tps in range(5000)], [val for val in range(5000)]]
+entree = [[[tps/(4*(10**5)) for tps in range(5000)], [sin(val/100) for val in range(5000)]]
           for k in range(10)]
 tab = []
 
