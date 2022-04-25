@@ -3,12 +3,14 @@ import numpy as np
 from dephasage_traitement import *
 from math import pi
 
+d = 1*(10**(-2))
 entree = [[[tps/(4*(10**5)) for tps in range(5000)], [sin(val/100) for val in range(5000)]]
           for k in range(10)]
+pixels = 40
 tab = []
 
-for i in range(20):
-    phi = i*(pi/20)
+for i in range(pixels):
+    phi = i*(pi/pixels)
     somme = somme_signaux(entree, phi)
     tab.append(max(somme[1]))
 
