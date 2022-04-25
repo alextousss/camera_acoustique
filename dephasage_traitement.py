@@ -10,7 +10,7 @@ def deph_avant_signal_num(tab, delta_t):
     valeurs = tab[1]
     c = 1
     t = 0
-    while t < delta_t and c < len(tps):
+    while t < delta_t:
         t += tps[c]-tps[c-1]
         c += 1
     return ([tps[:len(tps)-1-c], valeurs[c:]])  # avance la phase du signal
@@ -19,10 +19,10 @@ def deph_avant_signal_num(tab, delta_t):
 def deph_arrière_signal_num(tab, delta_t):
     tps = tab[0]
     valeurs = tab[1]
-    c = 1
+    c = 0
     t = 0
-    while t < delta_t and c < len(tps):
-        t += tps[c]-tps[c-1]
+    while t < delta_t:
+        t += tps[c+1]-tps[c]
         c += 1
     return ([tps[c:], valeurs[:len(tps)-1-c]])
 
