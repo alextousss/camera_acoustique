@@ -1,11 +1,22 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from dephasage_traitement import *
+from traitement_data import *
 from math import pi
+
+lst_fichier = ["data_440hz.txt"]
+
+param_filtre = {}
+param_filtre["fe"] = 400000  # Hz
+param_filtre["fcb"] = 20000  # Hz
+param_filtre["z"] = 1
+param_filtre["fch"] = 200
 
 d = 1*(10**(-2))
 entree = [[[tps/(4*(10**5)) for tps in range(5000)], [sin(val/100) for val in range(5000)]]
           for k in range(10)]
+# entree = [filtrage(fichier, param_filtre) for fichier in lst_fichier]
+
 pixels = 40
 tab = []
 
