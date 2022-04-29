@@ -1,59 +1,102 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from tqdm import tqdm
 
 
-tab = np.loadtxt("data.txt", dtype="int")
-l = len(tab)
-nb_courbes = 6
-courbes = np.zeros((nb_courbes, l))
+fichier = "data_440hz.txt"
 
-print("Débutde l'acquisition des données")
+param_filtre = {}
+param_filtre["fe"] = 400000  # Hz
+param_filtre["fcb"] = 20000  # Hz
+param_filtre["z"] = 1
+param_filtre["fch"] = 200  # Hz
 
-for k in tqdm(range(1, nb_courbes)):
-    pas = k*200
-    courbes[k, 0] = sum(tab[0:pas])
-    for i in range(1, len(tab) - pas):
-        courbes[k, i] = courbes[k, i-1]-tab[i-1]+tab[i+pas]
-    for i in range(0, len(tab) - pas):
-        courbes[k, i] = courbes[k, i]/pas
-    plt.plot(courbes[k, :-pas], label=str(pas))
 
-print("Fin de l'acquisition des données")
+def filtrage(fichier, param_filtre):
+    tableau = np.loadtxt(fichier, dtype="int")
 
-# plt.legend()
-# plt.show()
+    fe = param_filtre["fe"]
+    fcb = param_filtre["fcb"]
+    z = param_filtre["z"]
+    fch = param_filtre["fch"]
 
-# Fréquence de coupure
-fc = 500  # Hz
-tau = 1/(2*np.pi*fc)
+    # Fréquence d'échantillonage
+    Te = 1/fe
+    # Paramètre du filtre
+    taub = 1/(2*np.pi*fcb)
+    tauh = 1/(2*np.pi*fch)
 
-# Période d'échantillonnage
-Te = 1/400000  # s
+    if len(tableau.shape) > 1:
+        data = tableau[:, 0]
+        l = len(data)
+        temps = tableau[:, 1]
+        temps = [temps[i]-temps[0] for i in range(l)]
+    else:
+        data = tableau
+        l = len(data)
+        temps = [Te*i for i in range(l)]
 
-s_pb = np.zeros((nb_courbes, l))  # signal passe-bas
-print("Début du filtrage")
+    def filtre_ph1(data, tauh, Te):
+        signal = [0]
+        for i in range(l-1):
+            signal.append(data[i+1]-data[i]+signal[i]*(1-Te/tauh))
+        return signal
 
-for k in tqdm(range(1, nb_courbes)):
-    for i in tqdm(range(1, len(courbes[k, :]))):
-        s_pb[k, i] = (s_pb[k, i-1]+Te/tau*(courbes[k, i-1]-s_pb[k, i-1]))
+    def filtre_pb1(data, taub, Te):
+        # filtre passe bas ordre 1
+        signal = [0]
+        for i in range(1, l):
+            signal.append((signal[i-1]+Te/taub*(data[i-1]-signal[i-1])))
+        return signal
 
-    plt.plot(s_pb[k, pas:-pas], label=str(k*200))
+    def filtre_pb2(data, taub, Te, z):
+        # filtre passe bas ordre 2
+        s = [0, 0]
+        k = 1/(2*z*taub/Te+(taub/Te)**2)
+        p = 2*z*taub/Te+2*(taub/Te)**2-1
+        for i in range(1, l):
+            s.append(k*(data[i]+s[i]*p-s[i-1]*(taub/Te)**2))
+        return s
 
-print("Fin du filtrage")
+    #signalpb11 = filtre_pb1(data, tau, Te)
+    #signalpb12 = filtre_pb1(signalpb11, tau, Te)
+    signalpb2 = filtre_pb2(data, taub, Te, z)
+    signalphpb2 = filtre_ph1(signalpb2, tauh, Te)
+    signaldata = signalphpb2
 
+    return [temps, signaldata]
+
+
+'''
+#plt.plot(signalpb11[500:], label='pb ordre 1')
+plt.plot(signalphpb2[1000:], label="phpb2")
+#plt.plot(signalpb2[500:], label="pb ordre 2")
 plt.legend()
 plt.show()
+'''
 
-print("Début analyse FFT")
+#l_signal = [signalpb11, signalphpb2, signalpb2]
+l_signal = filtrage(fichier, param_filtre)[1]
+l_label = ["TF du signal après un p-bas ordre 2 et un p-haut"]
+#l_label = ['pb ordre 1', "phpb2", "pb ordre 2"]
 
-fft = np.zeros((nb_courbes, l))
+for i in range(len(l_signal)):
+    signal = l_signal[i]
+    fft = np.fft.fft(signal[500:])
+    freq = np.fft.fftfreq(len(signal[500:]), d=1/param_filtre["fe"])
+    # print(fft)
+    nbval = len(freq)//20
 
-"""
-for k in tqdm(range(1, nb_courbes)):
-    fft[k, :-2*pas] = np.fft.fft(s_pb[k, pas:-pas])
-    freq = np.fft.fftfreq(len(s_pb[k, pas:-pas]), 1/Te)
-    plt.plot(np.abs(fft[k, :]), label=str(k*200))
+    plt.plot(freq[:nbval], np.abs(fft)
+             [:nbval], label=l_label[i])
+
+    fftmax = max(fft[:nbval])
+    index_fftmax = list(fft[:nbval]).index(fftmax)
+    fmax = freq[index_fftmax]
+    print('fmax='+str(fmax))
+    # for i in range(1, 5):
+    #    plt.vlines(index_fmax*i, 0, max(np.abs(fft)[:nbval]), label='f'+str(i)+'='+str(fmax*i),
+    #               linestyles='dashed')
+
+plt.title("FFT du fichier "+fichier)
 plt.legend()
 plt.show()
-"""
