@@ -1,3 +1,4 @@
+from cProfile import label
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -75,27 +76,24 @@ plt.show()
 '''
 
 #l_signal = [signalpb11, signalphpb2, signalpb2]
-l_signal = filtrage(fichier, param_filtre)[1]
+signal = filtrage(fichier, param_filtre)[1]
 l_label = ["TF du signal après un p-bas ordre 2 et un p-haut"]
 #l_label = ['pb ordre 1', "phpb2", "pb ordre 2"]
 
-for i in range(len(l_signal)):
-    signal = l_signal[i]
-    fft = np.fft.fft(signal[500:])
-    freq = np.fft.fftfreq(len(signal[500:]), d=1/param_filtre["fe"])
-    # print(fft)
-    nbval = len(freq)//20
+fft = np.fft.fft(signal[500:])
+freq = np.fft.fftfreq(len(signal[500:]), d=1/param_filtre["fe"])
+# print(fft)
+nbval = len(freq)//20
 
-    plt.plot(freq[:nbval], np.abs(fft)
-             [:nbval], label=l_label[i])
+plt.plot(freq[:nbval], np.abs(fft)[:nbval], label=l_label[0])
 
-    fftmax = max(fft[:nbval])
-    index_fftmax = list(fft[:nbval]).index(fftmax)
-    fmax = freq[index_fftmax]
-    print('fmax='+str(fmax))
-    # for i in range(1, 5):
-    #    plt.vlines(index_fmax*i, 0, max(np.abs(fft)[:nbval]), label='f'+str(i)+'='+str(fmax*i),
-    #               linestyles='dashed')
+fftmax = max(fft[:nbval])
+index_fftmax = list(fft[:nbval]).index(fftmax)
+fmax = freq[index_fftmax]
+print('fmax='+str(np.floor(fmax))+' Hz')
+# for i in range(1, 5):
+#    plt.vlines(index_fmax*i, 0, max(np.abs(fft)[:nbval]), label='f'+str(i)+'='+str(fmax*i),
+#               linestyles='dashed')
 
 plt.title("FFT du fichier "+fichier)
 plt.legend()
