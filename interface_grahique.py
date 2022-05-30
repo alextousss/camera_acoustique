@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from dephasage_traitement import *
 from traitement_data import *
-from math import pi
+from math import pi, sin, cos
 
 lst_fichier = ["data_440hz.txt"]
 
@@ -13,9 +13,13 @@ param_filtre["z"] = 1
 param_filtre["fch"] = 200
 
 d = 1*(10**(-2))
-entree = [[[tps/(4*(10**5)) for tps in range(5000)], [sin(val/100) for val in range(5000)]]
+entree = [[[tps/(4*(10**5)) for tps in range(5000)], [sin(val/100 + k*cos(7*pi/10)*(10**(-2))/340*5000) for val in range(5000)]]
           for k in range(10)]
 # entree = [filtrage(fichier, param_filtre) for fichier in lst_fichier]
+
+for k in range(10):
+    plt.plot(entree[k][0], entree[k][1])
+plt.show()
 
 pixels = 40
 tab = []
